@@ -1,0 +1,21 @@
+<svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Мокап визитки КЕДР">
+  <defs><filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#000000" flood-opacity="0.16"/>
+    </filter></defs>
+  <rect width="800" height="600" fill="#ECECE6"/>
+  <g filter="url(#shadow)">
+    <rect x="140" y="220" width="340" height="200" rx="10" fill="#D8CBB0"/>
+  </g>
+  
+    <g transform="translate(220,300) scale(0.42)" fill="#5C7A52">
+      <path d="M0,-70 L34,-14 L-34,-14 Z"/>
+      <path d="M0,-36 L46,26 L-46,26 Z"/>
+      <path d="M0,0 L58,66 L-58,66 Z"/>
+      <rect x="-7" y="66" width="14" height="26" />
+    </g>
+  <text x="220" y="330" font-family="IBM Plex Mono, monospace" font-size="13" letter-spacing="2"
+        text-anchor="middle" fill="#3E4A34">КЕДР</text>
+  <g filter="url(#shadow)" transform="translate(60,60) rotate(-6)">
+    <rect x="140" y="220" width="340" height="200" rx="10" fill="#D8CBB0" opacity="0.55"/>
+  </g>
+</svg>

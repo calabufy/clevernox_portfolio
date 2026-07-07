@@ -1,0 +1,9 @@
+<svg viewBox="0 0 700 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Финальный вариант: три яруса хвои">
+  <rect width="700" height="520" fill="#F7F7F4"/>
+  <g transform="translate(350.0,290.0) scale(1.5)" fill="none" stroke="#1B1B16" stroke-width="2.4">
+    <path d="M0,-70 L34,-14 L-34,-14 Z"/>
+    <path d="M0,-36 L46,26 L-46,26 Z"/>
+    <path d="M0,0 L58,66 L-58,66 Z"/>
+    <rect x="-7" y="66" width="14" height="26"/>
+  </g>
+</svg>

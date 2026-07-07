@@ -1,0 +1,19 @@
+<svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Мокап упаковки КЕДР">
+  <defs><filter id="shadow3" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#000000" flood-opacity="0.16"/>
+    </filter></defs>
+  <rect width="800" height="600" fill="#ECECE6"/>
+  <g filter="url(#shadow3)">
+    <path d="M300,150 L500,150 L520,420 L280,420 Z" fill="#D8CBB0"/>
+    <path d="M300,150 L500,150 L510,180 L290,180 Z" fill="#D8CBB0" opacity="0.6"/>
+  </g>
+  
+    <g transform="translate(400,250) scale(0.34)" fill="#5C7A52">
+      <path d="M0,-70 L34,-14 L-34,-14 Z"/>
+      <path d="M0,-36 L46,26 L-46,26 Z"/>
+      <path d="M0,0 L58,66 L-58,66 Z"/>
+      <rect x="-7" y="66" width="14" height="26" />
+    </g>
+  <text x="400" y="330" font-family="IBM Plex Mono, monospace" font-size="13" letter-spacing="3"
+        text-anchor="middle" fill="#3E4A34">КЕДР</text>
+</svg>

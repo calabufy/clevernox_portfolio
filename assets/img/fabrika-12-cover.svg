@@ -1,0 +1,13 @@
+<svg viewBox="0 0 1200 860" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Обложка проекта ФАБРИКА 12">
+  <rect width="1200" height="860" fill="#E1592C"/>
+  
+    <g transform="translate(600.0,390.0) scale(1.35)">
+      <path d="M-70,-58 L46,-58 Q70,-58 70,-34 L70,58 Q70,70 58,70 L-70,70 Q-70,70 -70,58 Z"
+            fill="none" stroke="#FFFFFF" stroke-width="7"/>
+      <path d="M46,-58 L70,-34 L46,-34 Z" fill="#FFFFFF"/>
+      <text x="0" y="24" font-family="Fraunces, serif" font-weight="600" font-size="72"
+            text-anchor="middle" fill="#FFFFFF">12</text>
+    </g>
+  <text x="600.0" y="770" font-family="IBM Plex Mono, monospace" font-size="22" letter-spacing="6"
+        text-anchor="middle" fill="#FFFFFF" opacity="0.9">ФАБРИКА 12</text>
+</svg>

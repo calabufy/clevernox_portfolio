@@ -1,0 +1,17 @@
+<svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Мокап упаковки АРГО">
+  <defs><filter id="shadow3" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#000000" flood-opacity="0.16"/>
+    </filter></defs>
+  <rect width="800" height="600" fill="#ECECE6"/>
+  <g filter="url(#shadow3)">
+    <path d="M300,150 L500,150 L520,420 L280,420 Z" fill="#F2F5F4"/>
+    <path d="M300,150 L500,150 L510,180 L290,180 Z" fill="#F2F5F4" opacity="0.6"/>
+  </g>
+  
+    <g transform="translate(400,250) scale(0.34)" fill="none" stroke="#1F5C57" stroke-width="9" stroke-linecap="round">
+      <path d="M-74,10 C-50,-34 -18,-34 0,10 C18,54 50,54 74,10"/>
+      <path d="M0,10 C0,40 -22,58 -22,58 C-22,74 -4,78 8,66"/>
+    </g>
+  <text x="400" y="330" font-family="IBM Plex Mono, monospace" font-size="13" letter-spacing="3"
+        text-anchor="middle" fill="#123A3E">АРГО</text>
+</svg>

@@ -1,0 +1,11 @@
+<svg viewBox="0 0 700 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Финальный вариант: срезанный угол как деталь">
+  <rect width="700" height="520" fill="#F7F7F4"/>
+  
+    <g transform="translate(350.0,260.0) scale(1.15)">
+      <path d="M-70,-58 L46,-58 Q70,-58 70,-34 L70,58 Q70,70 58,70 L-70,70 Q-70,70 -70,58 Z"
+            fill="none" stroke="#1B1B16" stroke-width="7"/>
+      <path d="M46,-58 L70,-34 L46,-34 Z" fill="#1B1B16"/>
+      <text x="0" y="24" font-family="Fraunces, serif" font-weight="600" font-size="72"
+            text-anchor="middle" fill="#1B1B16">12</text>
+    </g>
+</svg>

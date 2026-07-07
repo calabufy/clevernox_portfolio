@@ -1,0 +1,18 @@
+<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Портрет-плейсхолдер">
+  <defs>
+    <filter id="ashadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000000" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+  <rect width="400" height="400" fill="#EFEFEA"/>
+  <g filter="url(#ashadow)">
+    <circle cx="200" cy="170" r="86" fill="#DFDFD6"/>
+    <path d="M70,392 C70,300 120,258 200,258 C280,258 330,300 330,392 Z" fill="#DFDFD6"/>
+  </g>
+  <g stroke="#2F4CFF" stroke-width="3" fill="none" opacity="0.9">
+    <circle cx="60" cy="60" r="14"/>
+    <path d="M60,46 L60,74 M46,60 L74,60"/>
+    <circle cx="340" cy="340" r="14"/>
+    <path d="M340,326 L340,354 M326,340 L354,340"/>
+  </g>
+</svg>

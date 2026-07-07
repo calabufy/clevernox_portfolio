@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<script>document.documentElement.classList.add("js");</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Обо мне — Имя Фамилия</title>
+<meta name="description" content="Графический дизайнер: опыт, инструменты, CV.">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,500;0,600;0,700;1,500&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="container nav">
+    <a href="index.html" class="nav-name">Имя Фамилия</a>
+    <button class="nav-burger" aria-label="Открыть меню" aria-expanded="false"><span class="bar"></span></button>
+    <ul class="nav-links" data-open="false">
+      <li><a href="works.html">Работы</a></li>
+      <li><a href="about.html" aria-current="page">Обо мне</a></li>
+      <li><a href="index.html#contact">Контакты</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+
+  <section class="container about-hero reveal">
+    <div>
+      <span class="eyebrow"><svg class="regmark" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 2v6M12 16v6M2 12h6M16 12h6"/></svg> Обо мне</span>
+      <p class="about-lede" style="margin-top:16px;">Делаю знаки и системы идентики, которые узнают за секунду — и которые дизайнер следующего мокапа скажет спасибо, что не пришлось спорить с сеткой.</p>
+    </div>
+    <img class="about-photo" src="assets/img/avatar.svg" alt="Портрет дизайнера — плейсхолдер, заменить на настоящую фотографию" width="260" height="260">
+  </section>
+
+  <section class="container about-copy reveal">
+    <p>Работаю графическим дизайнером шесть лет, специализация — брендинг, айдентика и логотипы. Начинаю с логики: кто клиент, что должен почувствовать зритель за секунду и на каких носителях знак будет жить дольше всего.</p>
+    <p>Довожу каждый проект до системы — не только до логотипа, но и до правил, по которым бренд ведёт себя на визитке, вывеске, упаковке и в интерфейсе. Открыт к проектам как в найм, так и на фриланс.</p>
+  </section>
+
+  <section class="container reveal">
+    <h2 class="section-title" style="font-size: clamp(20px, 2.4vw, 24px); margin-bottom: 16px;">Инструменты</h2>
+    <ul class="tool-list">
+      <li>Illustrator</li>
+      <li>Photoshop</li>
+      <li>InDesign</li>
+      <li>Figma</li>
+    </ul>
+  </section>
+
+  <section class="container about-cta reveal">
+    <a class="btn btn-primary" href="assets/cv.pdf" download>Скачать CV</a>
+  </section>
+
+</main>
+
+<footer class="site-footer" id="contact">
+  <div class="container footer-grid">
+    <div class="footer-contact">
+      <a href="mailto:hello@example.com">hello@example.com</a>
+      <a class="text-link" href="https://t.me/username" target="_blank" rel="noopener">Telegram → @username</a>
+    </div>
+    <div class="footer-col">
+      <h3>Профиль</h3>
+      <ul>
+        <li><a class="text-link" href="https://www.behance.net/" target="_blank" rel="noopener">Behance</a></li>
+        <li><a class="text-link" href="assets/cv.pdf" download>Скачать CV</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h3>Навигация</h3>
+      <ul>
+        <li><a class="text-link" href="works.html">Работы</a></li>
+        <li><a class="text-link" href="about.html">Обо мне</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="container footer-bottom">
+    <span>© 2026 Имя Фамилия</span>
+    <span>Портфолио спроектировано и свёрстано самостоятельно</span>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>

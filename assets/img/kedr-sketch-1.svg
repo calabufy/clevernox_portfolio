@@ -1,0 +1,7 @@
+<svg viewBox="0 0 700 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ранний эскиз: дерево целиком">
+  <rect width="700" height="520" fill="#F7F7F4"/>
+  <g transform="translate(350.0,300.0)" fill="none" stroke="#1B1B16" stroke-width="2.4">
+    <path d="M0,-190 L26,-120 L10,-120 L44,-56 L22,-56 L64,20 L-64,20 L-22,-56 L-44,-56 L-10,-120 L-26,-120 Z"/>
+    <rect x="-9" y="20" width="18" height="34"/>
+  </g>
+</svg>

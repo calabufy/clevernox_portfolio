@@ -1,0 +1,8 @@
+<svg viewBox="0 0 700 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Финальный вариант: волна и якорь как одна линия">
+  <rect width="700" height="520" fill="#F7F7F4"/>
+  
+    <g transform="translate(350.0,260.0) scale(1.1)" fill="none" stroke="#1B1B16" stroke-width="9" stroke-linecap="round">
+      <path d="M-74,10 C-50,-34 -18,-34 0,10 C18,54 50,54 74,10"/>
+      <path d="M0,10 C0,40 -22,58 -22,58 C-22,74 -4,78 8,66"/>
+    </g>
+</svg>

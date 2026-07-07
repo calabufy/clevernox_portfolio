@@ -1,0 +1,7 @@
+<svg viewBox="0 0 700 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ранний эскиз: полный квадрат без среза угла">
+  <rect width="700" height="520" fill="#F7F7F4"/>
+  <g transform="translate(350.0,260.0) scale(1.15)" fill="none" stroke="#1B1B16" stroke-width="2.4">
+    <rect x="-70" y="-58" width="140" height="128" rx="14"/>
+    <text x="0" y="24" font-family="Fraunces, serif" font-weight="600" font-size="72" text-anchor="middle" fill="#1B1B16" stroke="none">12</text>
+  </g>
+</svg>
