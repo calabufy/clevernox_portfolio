@@ -1,47 +1,42 @@
-// Portfolio — main.js
-// Two jobs only, per the brief: mobile burger menu, and a light
-// scroll-reveal for section entrances. No frameworks.
-
+// Бургер-меню
 (function () {
-  "use strict";
-
-  /* ---------- burger menu ---------- */
   var burger = document.querySelector(".nav-burger");
   var links = document.querySelector(".nav-links");
+  if (!burger || !links) return;
 
-  if (burger && links) {
-    burger.addEventListener("click", function () {
-      var open = burger.getAttribute("aria-expanded") === "true";
-      burger.setAttribute("aria-expanded", String(!open));
-      links.setAttribute("data-open", String(!open));
+  burger.addEventListener("click", function () {
+    var open = links.getAttribute("data-open") === "true";
+    links.setAttribute("data-open", String(!open));
+    burger.setAttribute("aria-expanded", String(!open));
+  });
+
+  links.querySelectorAll("a").forEach(function (a) {
+    a.addEventListener("click", function () {
+      links.setAttribute("data-open", "false");
+      burger.setAttribute("aria-expanded", "false");
     });
+  });
+})();
 
-    links.querySelectorAll("a").forEach(function (a) {
-      a.addEventListener("click", function () {
-        burger.setAttribute("aria-expanded", "false");
-        links.setAttribute("data-open", "false");
+// Появление блоков при скролле (прогрессивное улучшение — без JS всё видно сразу)
+(function () {
+  var items = document.querySelectorAll(".reveal");
+  if (!items.length || !("IntersectionObserver" in window)) {
+    items.forEach(function (el) { el.classList.add("is-visible"); });
+    return;
+  }
+
+  var observer = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        }
       });
-    });
-  }
+    },
+    { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+  );
 
-  /* ---------- scroll reveal ---------- */
-  var revealEls = document.querySelectorAll(".reveal");
-
-  if ("IntersectionObserver" in window && revealEls.length) {
-    var io = new IntersectionObserver(
-      function (entries) {
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("is-visible");
-            io.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.15, rootMargin: "0px 0px -40px 0px" }
-    );
-    revealEls.forEach(function (el) { io.observe(el); });
-  } else {
-    // No IntersectionObserver support: show everything immediately.
-    revealEls.forEach(function (el) { el.classList.add("is-visible"); });
-  }
+  items.forEach(function (el) { observer.observe(el); });
 })();
