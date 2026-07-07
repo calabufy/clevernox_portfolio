@@ -400,3 +400,95 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 }
 
 .about-cta { padding-bottom: clamp(48px, 8vw, 88px); }
+
+/* Hero: фото рядом с именем */
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: clamp(32px, 6vw, 64px);
+}
+
+/* Hero: фото-полароид */
+.hero-photo {
+  position: relative;
+  justify-self: end;
+}
+
+.hero-photo .polaroid {
+  position: relative;
+  background: #FDFDFB;
+  padding: 14px 14px 48px;
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.08),
+    0 18px 36px rgba(0, 0, 0, 0.14);
+  transform: rotate(-2deg);
+}
+
+.hero-photo .polaroid img {
+  display: block;
+  width: clamp(160px, 18vw, 240px);
+  height: clamp(160px, 18vw, 240px);
+  object-fit: cover;
+  background: #EFEFEA;
+}
+
+.hero-photo .tape {
+  position: absolute;
+  width: 64px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.10);
+  backdrop-filter: blur(0.5px);
+}
+
+.hero-photo .tape.tl {
+  top: -0px;
+  left: -30px;
+  transform: rotate(-42deg);
+}
+
+.hero-photo .tape.br {
+  bottom: -0px;
+  right: -30px;
+  transform: rotate(-40deg);
+}
+
+.hero-photo .regmark {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  color: var(--accent, #2F4CFF);
+}
+
+.hero-photo .regmark.tl {
+  top: -10px;
+  left: -10px;
+}
+
+.hero-photo .regmark.br {
+  bottom: -10px;
+  right: -10px;
+}
+
+@media (max-width: 720px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+    justify-items: start;
+  }
+
+.hero-photo .polaroid {
+  transform: rotate(-1deg);
+  padding: 10px 10px 34px;
+}
+
+.hero-photo .polaroid img {
+  width: 120px;
+  height: 120px;
+}
+
+.hero-photo .tape {
+  width: 46px;
+  height: 18px;
+}
