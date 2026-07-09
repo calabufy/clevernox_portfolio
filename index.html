@@ -55,10 +55,10 @@
 
     <!--
       Порядок панелей: по числу работ (по убыванию), при равенстве — по алфавиту.
-      Сейчас наполнена только «Айдентика» (3 работы) — остальные считаются
-      пустыми (0) и идут дальше по алфавиту. При добавлении работ в другие
-      направления поправьте data-count и порядок панелей вручную (см. ТЗ, п.6).
+      Блок между маркерами DIRECTIONS перегенерируется build.js — не редактировать
+      вручную, править данные в data/categories.js и data/works.js (см. build.js).
     -->
+    <!-- DIRECTIONS:START -->
     <div class="directions-grid">
 
       <a class="direction-panel" href="category-identity.html" data-count="3">
@@ -67,10 +67,10 @@
         <span class="direction-count"><strong>3</strong> работы</span>
       </a>
 
-      <a class="direction-panel" href="category-infographics.html" data-count="0" data-empty="true">
+      <a class="direction-panel" href="category-infographics.html" data-count="1">
         <h3 class="direction-title">Инфографика</h3>
         <p class="direction-blurb">Карточки товаров для Ozon, Wildberries, Яндекс.Маркет</p>
-        <span class="direction-count"><strong>0</strong> работ</span>
+        <span class="direction-count"><strong>1</strong> работа</span>
       </a>
 
       <a class="direction-panel" href="category-print.html" data-count="0" data-empty="true">
@@ -104,6 +104,7 @@
       </a>
 
     </div>
+    <!-- DIRECTIONS:END -->
   </section>
 
   <section class="container about-brief reveal" aria-labelledby="about-title">
