@@ -32,7 +32,7 @@ function regmark() {
 function renderWorkCard(work) {
   return `      <a class="work-card" href="work-${work.slug}.html">
         <div class="work-card-media">
-          <img src="${work.cover}" alt="${work.cardAlt}">
+          <img src="${work.cardCover || work.cover}" alt="${work.cardAlt}">
           ${regmark()}
         </div>
         <div class="work-card-meta">
