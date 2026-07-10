@@ -2,7 +2,7 @@
    Портфолио графического дизайнера — style.css
    Палитра: paper / ink + акцент cobalt.
    Шрифты: Fraunces (display) / Inter (текст) / IBM Plex Mono (счётчики, лейблы).
-   Фирменный мотив: крестик приводочной метки (print registration mark).
+   Фирменный мотив: клевер из 4 закрашенных сердец, остриём к центру (regmark).
    ========================================================= */
 
 :root {
@@ -65,7 +65,7 @@ button { font: inherit; background: none; border: none; cursor: pointer; }
   outline-offset: 3px;
 }
 
-.regmark { width: 1em; height: 1em; stroke: currentColor; fill: none; stroke-width: 1.6; vertical-align: -0.15em; }
+.regmark { width: 1em; height: 1em; fill: currentColor; stroke: none; vertical-align: -0.15em; }
 
 .eyebrow {
   display: inline-flex;

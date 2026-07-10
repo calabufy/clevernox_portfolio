@@ -60,6 +60,6 @@ Adding a new case study means:
 ### CSS conventions (`css/style.css`)
 
 - Color/typography/spacing tokens are CSS custom properties in `:root` (`--paper`, `--ink`, `--cobalt` accent, `--font-display` (Fraunces) / `--font-body` (Inter) / `--font-mono` (IBM Plex Mono), `--container`, `--radius`).
-- Recurring motif: the `.regmark` crosshair SVG (print registration mark) used as a decorative icon throughout `.eyebrow` labels and image corners.
+- Recurring motif: the `.regmark` SVG — a clover of 4 filled hearts, tips pointing to center — used as a decorative icon throughout `.eyebrow` labels and image corners. It's a filled `currentColor` shape, so it inherits blue (`--cobalt`) in `.eyebrow` context; corner variants (`.regmark.tl`/`.regmark.br`) and the work-card thumbnail variant explicitly override to white for contrast over photos.
 - Section-level CSS is organized in large comment-delimited blocks per page area (header/nav, hero, directions grid, work grid, case page, about, footer) — when editing styles for one page section, find its block via the banner comments rather than searching by selector alone.
 - Mobile breakpoints are per-component (`@media (max-width: 760px)` etc.), not global — check the bottom of each section's CSS block for its own responsive overrides.

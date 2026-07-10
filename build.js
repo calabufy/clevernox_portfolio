@@ -25,8 +25,10 @@ function worksByCategory(slug) {
   return works.filter((w) => w.category === slug);
 }
 
+const REGMARK_HEART = "M0,4.3C-1.8,2.3 -4.3,0.4 -4.3,-2.1C-4.3,-3.9 -2.9,-5.2 -1.3,-5.2C-0.5,-5.2 0,-4.6 0,-4.1C0,-4.6 0.5,-5.2 1.3,-5.2C2.9,-5.2 4.3,-3.9 4.3,-2.1C4.3,0.4 1.8,2.3 0,4.3Z";
+
 function regmark() {
-  return `<svg class="regmark" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 2v6M12 16v6M2 12h6M16 12h6"/></svg>`;
+  return `<svg class="regmark" viewBox="0 0 24 24" aria-hidden="true"><path transform="translate(12,6.1)" d="${REGMARK_HEART}"/><path transform="translate(17.9,12) rotate(90)" d="${REGMARK_HEART}"/><path transform="translate(12,17.9) rotate(180)" d="${REGMARK_HEART}"/><path transform="translate(6.1,12) rotate(-90)" d="${REGMARK_HEART}"/></svg>`;
 }
 
 function renderWorkCard(work) {
