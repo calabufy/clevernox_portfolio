@@ -59,8 +59,11 @@ function renderCategoryBody(category, categoryWorks) {
   }
 
   const cards = categoryWorks.map(renderWorkCard).join("\n\n");
+  // Обложки направления «Реклама» портретные (3:4) — карточки сетки используют
+  // этот же аспект вместо альбомного 4:3 по умолчанию (см. .work-grid--portrait в style.css).
+  const gridClass = PORTRAIT_GRID_CATEGORIES.includes(category.slug) ? "work-grid work-grid--portrait" : "work-grid";
   return `  <section class="container reveal" aria-label="${label}" style="padding-bottom: clamp(48px, 6vw, 72px);">
-    <div class="work-grid">
+    <div class="${gridClass}">
 
 ${cards}
 
@@ -116,18 +119,30 @@ ${renderIdeaFigures(idea)}
   return parts.join("\n");
 }
 
-// Работы категории «Инфографика» приходят в виде карточек 1200×1600 px —
-// на странице кейса (обложка + результат) их всегда показываем вполовину
-// физического размера. Карточка в сетке направления (work-grid) не уменьшается.
+// Исходники приходят в виде карточек 1200×1600 px — на странице кейса их
+// показываем вполовину физического размера. Карточка в сетке направления
+// (work-grid) никогда не уменьшается — правило касается только case-page.
 // Ограничиваем через max-width (не width/height-атрибуты): у .result-gallery img
 // в CSS нет height:auto, поэтому фиксированный height-атрибут сплющивает картинку —
 // max-width сохраняет пропорции без изменения style.css.
-const HALF_SIZE_CATEGORIES = ["infographics"];
+//
+// «Инфографика» — уменьшаются и обложка, и все картинки результата (галерея).
+// «Реклама» — уменьшается только обложка кейса, галерея остаётся в полный размер.
+const HALF_COVER_CATEGORIES = ["infographics", "ads"];
+const HALF_GALLERY_CATEGORIES = ["infographics"];
 const NATIVE_WIDTH = 1200;
+const HALF_SIZE_ATTR = ` style="max-width:${NATIVE_WIDTH / 2}px"`;
+
+// Категории, где cover-изображения портретные (3:4) — карточки в сетке направления
+// используют этот же аспект вместо альбомного 4:3 по умолчанию.
+const PORTRAIT_GRID_CATEGORIES = ["ads"];
+
+function coverSizeAttr(category) {
+  return HALF_COVER_CATEGORIES.includes(category) ? HALF_SIZE_ATTR : "";
+}
 
 function caseImageSizeAttr(category) {
-  if (!HALF_SIZE_CATEGORIES.includes(category)) return "";
-  return ` style="max-width:${NATIVE_WIDTH / 2}px"`;
+  return HALF_GALLERY_CATEGORIES.includes(category) ? HALF_SIZE_ATTR : "";
 }
 
 function renderGallery(gallery, category) {
@@ -162,7 +177,7 @@ function renderWorkPage(work) {
     SUMMARY: work.summary,
     COVER: work.cover,
     COVER_ALT: work.coverAlt,
-    COVER_SIZE_ATTR: caseImageSizeAttr(work.category),
+    COVER_SIZE_ATTR: coverSizeAttr(work.category),
     CLIENT: work.client,
     TASK: work.task,
     ROLE: work.role,

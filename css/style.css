@@ -330,6 +330,8 @@ html:not(.js) .reveal { opacity: 1; transform: none; }
   grid-template-columns: repeat(3, 1fr);
   gap: clamp(18px, 2.4vw, 28px);
 }
+/* обложки направления «Реклама» — портретные (3:4), а не альбомные 4:3 */
+.work-grid--portrait .work-card-media { aspect-ratio: 3 / 4; }
 .work-card { display: block; }
 .work-card-media {
   position: relative;
