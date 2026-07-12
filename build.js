@@ -164,13 +164,21 @@ ${items}
     .join("\n");
 }
 
+// Секция «Результат» из шаблона (templates/work.html). Если у кейса нет галерейных
+// изображений (только обложка), вырезаем её из готового HTML целиком — иначе на
+// странице остаётся пустой заголовок «Результат» без картинок. Делаем это пост-
+// обработкой строки, а не через плейсхолдер, чтобы не трогать сам шаблон.
+const RESULT_SECTION_RE =
+  /\n\n {2}<section class="container case-section reveal">\n {4}<div class="case-section-grid">\n {6}<span class="eyebrow">[\s\S]*?Результат<\/span>[\s\S]*?<\/section>/;
+
 function renderWorkPage(work) {
   const categoryWorks = worksByCategory(work.category);
   const idx = categoryWorks.findIndex((w) => w.slug === work.slug);
   const prev = categoryWorks[(idx - 1 + categoryWorks.length) % categoryWorks.length];
   const next = categoryWorks[(idx + 1) % categoryWorks.length];
 
-  return fill(workTemplate, {
+  const hasGallery = work.gallery && work.gallery.length > 0;
+  let html = fill(workTemplate, {
     PAGE_TITLE: work.pageTitle,
     META_DESCRIPTION: work.metaDescription,
     TYPE: work.type,
@@ -185,13 +193,18 @@ function renderWorkPage(work) {
     ROLE: work.role,
     IDEA_PARAGRAPHS: renderIdeaParagraphs(work.idea),
     IDEA_EXTRAS: renderIdeaExtras(work.idea),
-    GALLERY: renderGallery(work.gallery, work.category),
+    GALLERY: hasGallery ? renderGallery(work.gallery, work.category) : "",
     OUTCOME: work.outcome,
     PREV_SLUG: prev.slug,
     PREV_TITLE: prev.title,
     NEXT_SLUG: next.slug,
     NEXT_TITLE: next.title,
   });
+
+  if (!hasGallery) {
+    html = html.replace(RESULT_SECTION_RE, "");
+  }
+  return html;
 }
 
 function renderDirectionsGrid() {
