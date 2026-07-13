@@ -528,3 +528,134 @@ html:not(.js) .reveal { opacity: 1; transform: none; }
   .footer-grid { grid-template-columns: 1fr 1fr; }
   .footer-contact { grid-column: 1 / -1; }
 }
+
+/* ============================================================
+   Интерактивный 3D-макет готового товара (case-page «Готовый продукт»)
+   Чистые CSS-3D-трансформы, без библиотек. Вращение задаётся переменными
+   --rx/--ry на .viz3d-obj из js/main.js; при выключенном JS показывается
+   статичная, но всё равно объёмная модель в стартовом ракурсе.
+   ============================================================ */
+.viz3d { margin: 0; }
+.viz3d-stage {
+  position: relative;
+  height: 460px;
+  perspective: 1100px;
+  perspective-origin: 50% 42%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.viz3d-stage:active { cursor: grabbing; }
+.viz3d-obj {
+  position: relative;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--rx, -16deg)) rotateY(var(--ry, -28deg));
+}
+.viz3d-obj.spin { transition: none; }
+
+/* Общий блик/затенение поверх сцены — дешёвая имитация объёмного освещения. */
+.viz3d-gloss {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 90% at 38% 22%, rgba(255,255,255,0.20), rgba(255,255,255,0) 55%),
+    linear-gradient(105deg, rgba(0,0,0,0.16) 0%, rgba(0,0,0,0) 34%, rgba(0,0,0,0) 62%, rgba(0,0,0,0.20) 100%);
+}
+/* Мягкая контактная тень под моделью. */
+.viz3d-stage::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 34px;
+  width: 260px;
+  height: 42px;
+  transform: translateX(-50%);
+  background: radial-gradient(50% 50% at 50% 50%, rgba(27,27,22,0.28), rgba(27,27,22,0) 70%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.viz3d-hint {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  background: rgba(247,247,244,0.75);
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+.viz3d.interacted .viz3d-hint { opacity: 0; }
+.viz3d figcaption {
+  margin-top: 18px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--ink-faint);
+  max-width: 62ch;
+}
+
+/* --- Коробка (LUNKA) --- */
+.viz3d-box .viz3d-face {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--cap);
+  backface-visibility: hidden;
+  box-shadow: inset 0 0 0 1px rgba(27,27,22,0.06);
+}
+.viz3d-box .f-front,
+.viz3d-box .f-back { width: var(--w); height: var(--h); margin: calc(var(--h) / -2) 0 0 calc(var(--w) / -2); }
+.viz3d-box .f-left,
+.viz3d-box .f-right { width: var(--d); height: var(--h); margin: calc(var(--h) / -2) 0 0 calc(var(--d) / -2); }
+.viz3d-box .f-top,
+.viz3d-box .f-bottom { width: var(--w); height: var(--d); margin: calc(var(--d) / -2) 0 0 calc(var(--w) / -2); background: var(--cap); }
+.viz3d-box .f-front  { transform: translateZ(calc(var(--d) / 2)); }
+.viz3d-box .f-back   { transform: rotateY(180deg) translateZ(calc(var(--d) / 2)); filter: brightness(0.74); }
+.viz3d-box .f-right  { transform: rotateY(90deg) translateZ(calc(var(--w) / 2)); filter: brightness(0.86); }
+.viz3d-box .f-left   { transform: rotateY(-90deg) translateZ(calc(var(--w) / 2)); filter: brightness(0.9); }
+.viz3d-box .f-top    { transform: rotateX(90deg) translateZ(calc(var(--h) / 2)); filter: brightness(1.06); }
+.viz3d-box .f-bottom { transform: rotateX(-90deg) translateZ(calc(var(--h) / 2)); filter: brightness(0.6); }
+
+/* --- Цилиндр/бутылка (NOX BREW) --- */
+.viz3d-seg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background-repeat: no-repeat;
+  background-color: #241a12;
+  backface-visibility: hidden;
+}
+.viz3d-cap-seg { background: linear-gradient(#26221c, #100e0b); }
+.viz3d-disc {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+}
+.viz3d-cyl .body-top,
+.viz3d-cyl .body-bottom { background: radial-gradient(60% 60% at 50% 45%, #2c211a, #16100b); }
+.viz3d-cyl .cap-top { background: radial-gradient(60% 60% at 50% 40%, #2c2822, #0d0b09); }
+
+@media (max-width: 760px) {
+  .viz3d-stage { height: 400px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .viz3d-hint { display: none; }
+}

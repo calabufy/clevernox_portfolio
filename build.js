@@ -168,8 +168,95 @@ ${items}
 // изображений (только обложка), вырезаем её из готового HTML целиком — иначе на
 // странице остаётся пустой заголовок «Результат» без картинок. Делаем это пост-
 // обработкой строки, а не через плейсхолдер, чтобы не трогать сам шаблон.
+// Умеренно-ленивый шаблон `(?:(?!</section>)[\s\S])*?` не даёт совпадению
+// пересечь границу </section>, поэтому «Результат» привязан к своей секции, а не
+// подхватывается начиная с «Контекста»/«Идеи» (иначе вырезались бы и они —
+// у работ без галереи, например упаковок LUNKA/NOX).
 const RESULT_SECTION_RE =
-  /\n\n {2}<section class="container case-section reveal">\n {4}<div class="case-section-grid">\n {6}<span class="eyebrow">[\s\S]*?Результат<\/span>[\s\S]*?<\/section>/;
+  /\n\n {2}<section class="container case-section reveal">\n {4}<div class="case-section-grid">\n {6}<span class="eyebrow">(?:(?!<\/section>)[\s\S])*?Результат<\/span>[\s\S]*?<\/section>/;
+
+// Интерактивный 3D-макет готового товара на чистых CSS-трансформах (без 3D-библиотек).
+// Тип "box" — параллелепипед из шести граней (упаковка-коробка), тип "cylinder" —
+// гранёный цилиндр с обёрнутой круговой этикеткой (бутылка/банка). Вся геометрия
+// (translateZ, rotateY сегментов) считается здесь и уходит в inline-стили — CSS
+// отвечает только за перспективу, освещение и вращение по --rx/--ry (js/main.js).
+function renderBox(m) {
+  const { w, h, d } = m.size;
+  const f = m.faces;
+  // Верхний торец: если в развёртке есть панель крышки — кладём её картинкой,
+  // иначе остаётся сплошной цвет --cap (как и нижний торец).
+  const topStyle = f.top
+    ? ` style="background-image:url(${f.top});background-size:cover;background-color:var(--cap)"`
+    : "";
+  return `          <div class="viz3d-obj viz3d-box" style="--w:${w}px;--h:${h}px;--d:${d}px;--cap:${m.cap};">
+            <div class="viz3d-face f-front" style="background-image:url(${f.front})"></div>
+            <div class="viz3d-face f-back" style="background-image:url(${f.back})"></div>
+            <div class="viz3d-face f-right" style="background-image:url(${f.right})"></div>
+            <div class="viz3d-face f-left" style="background-image:url(${f.left})"></div>
+            <div class="viz3d-face f-top"${topStyle}></div>
+            <div class="viz3d-face f-bottom"></div>
+          </div>`;
+}
+
+function renderCylinder(m) {
+  const N = 40; // граней в цилиндре тела
+  const r = 70; // радиус тела, px
+  const bodyH = 300; // высота стеклянного тела
+  const bandH = 200; // высота полосы этикетки (95 мм в том же масштабе)
+  const circ = 2 * Math.PI * r;
+  const w = circ / N; // ширина одной грани
+  const tz = r * Math.cos(Math.PI / N); // расстояние до центра грани (апофема)
+  const capR = 42;
+  const capH = 60;
+  const capN = 24;
+  const capTz = capR * Math.cos(Math.PI / capN);
+  const capY = -(bodyH / 2 + capH / 2);
+
+  const bodySegs = [];
+  for (let i = 0; i < N; i++) {
+    const rot = ((360 / N) * i).toFixed(3);
+    const bgx = (-i * w).toFixed(2);
+    bodySegs.push(
+      `            <div class="viz3d-seg" style="width:${(w + 0.7).toFixed(2)}px;height:${bodyH}px;transform:translate(-50%,-50%) rotateY(${rot}deg) translateZ(${tz.toFixed(2)}px);background-image:url(${m.label});background-size:${circ.toFixed(1)}px ${bandH}px;background-position:${bgx}px center;"></div>`
+    );
+  }
+  const capSegs = [];
+  for (let i = 0; i < capN; i++) {
+    const rot = ((360 / capN) * i).toFixed(3);
+    capSegs.push(
+      `            <div class="viz3d-seg viz3d-cap-seg" style="width:${(2 * capR * Math.tan(Math.PI / capN) + 0.7).toFixed(2)}px;height:${capH}px;transform:translate(-50%,-50%) translateY(${capY}px) rotateY(${rot}deg) translateZ(${capTz.toFixed(2)}px);"></div>`
+    );
+  }
+
+  return `          <div class="viz3d-obj viz3d-cyl" style="--r:${r}px;--bodyH:${bodyH}px;--capR:${capR}px;">
+            <div class="viz3d-disc body-top" style="width:${2 * r}px;height:${2 * r}px;transform:translate(-50%,-50%) rotateX(90deg) translateZ(${bodyH / 2}px)"></div>
+            <div class="viz3d-disc body-bottom" style="width:${2 * r}px;height:${2 * r}px;transform:translate(-50%,-50%) rotateX(-90deg) translateZ(${bodyH / 2}px)"></div>
+${bodySegs.join("\n")}
+            <div class="viz3d-disc cap-top" style="width:${2 * capR}px;height:${2 * capR}px;transform:translate(-50%,-50%) translateY(${-(bodyH / 2 + capH)}px) rotateX(90deg) translateZ(${capR}px)"></div>
+${capSegs.join("\n")}
+          </div>`;
+}
+
+function renderModel3d(m) {
+  if (!m) return "";
+  const inner = m.type === "box" ? renderBox(m) : renderCylinder(m);
+  // Ведущий \n даёт пустую строку-разделитель перед секцией; при пустом model3d
+  // возвращается "" и разметка остальных работ не меняется (см. шаблон work.html).
+  return `\n  <section class="container case-section reveal">
+    <div class="case-section-grid">
+      <span class="eyebrow">${regmark()} ${m.eyebrow || "Готовый продукт"}</span>
+      <figure class="viz3d viz3d--${m.type}" data-viz3d>
+        <div class="viz3d-stage">
+${inner}
+          <div class="viz3d-gloss" aria-hidden="true"></div>
+        </div>
+        <span class="viz3d-hint" aria-hidden="true">Потяните, чтобы повернуть</span>
+        <figcaption>${m.caption}</figcaption>
+      </figure>
+    </div>
+  </section>
+`;
+}
 
 function renderWorkPage(work) {
   const categoryWorks = worksByCategory(work.category);
@@ -193,6 +280,7 @@ function renderWorkPage(work) {
     ROLE: work.role,
     IDEA_PARAGRAPHS: renderIdeaParagraphs(work.idea),
     IDEA_EXTRAS: renderIdeaExtras(work.idea),
+    MODEL_3D: renderModel3d(work.model3d),
     GALLERY: hasGallery ? renderGallery(work.gallery, work.category) : "",
     OUTCOME: work.outcome,
     PREV_SLUG: prev.slug,
@@ -247,6 +335,7 @@ function pluralWork(n) {
 }
 
 function writeFile(relPath, content) {
+  if (!content.endsWith("\n")) content += "\n"; // файлы завершаем переводом строки
   fs.writeFileSync(path.join(ROOT, relPath), content, "utf8");
   console.log(`wrote ${relPath}`);
 }

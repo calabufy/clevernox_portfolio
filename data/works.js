@@ -585,6 +585,24 @@ const works = [
       ],
     },
     outcome: "Готовая развёртка с технической спецификацией (размеры панелей, вылеты, безопасное поле) передана в типографию для печати тиража и легла в основу дизайн-системы для будущих вкусов линейки LUNKA.",
+    model3d: {
+      type: "box",
+      eyebrow: "Готовый продукт",
+      caption: "Интерактивный 3D-макет упаковки — развёртка, собранная в коробку. Потяните мышью или пальцем, чтобы повернуть.",
+      // Панели нарезаны из развёртки cover.png (см. build/scratchpad). Порядок граней
+      // соответствует легенде «Порядок панелей» на сборном листе.
+      faces: {
+        front: "assets/img/print/lunka-porridge-packaging/panels/front.png",
+        back: "assets/img/print/lunka-porridge-packaging/panels/back.png",
+        left: "assets/img/print/lunka-porridge-packaging/panels/left.png",
+        right: "assets/img/print/lunka-porridge-packaging/panels/right.png",
+        top: "assets/img/print/lunka-porridge-packaging/panels/top.png",
+      },
+      cap: "#f3e2cd", // цвет нижнего торца и подложки крышки (крем панели)
+      // Пропорции граней в px повторяют реальную развёртку: панели front/back
+      // 655×963, боковые 242×963, крышка 655×242 — т.е. коробка ≈ 120×44×176 мм.
+      size: { w: 231, h: 340, d: 85 },
+    },
   },
   {
     slug: "nox-brew-label",
@@ -607,6 +625,14 @@ const works = [
       ],
     },
     outcome: "Готовая развёртка с полной технической спецификацией передана в типографию для печати тиража этикеток и легла в основу фирменного стиля бренда NOX BREW для будущих вкусовых вариаций.",
+    model3d: {
+      type: "cylinder",
+      eyebrow: "Готовый продукт",
+      caption: "Интерактивный 3D-макет: круговая этикетка 210×95 мм, обёрнутая вокруг бутылки холодного кофе. Потяните мышью или пальцем, чтобы повернуть.",
+      // Полоса круговой этикетки, нарезанная из развёртки cover.png, оборачивается
+      // ровно один раз вокруг гранёного цилиндра (см. renderCylinder в build.js).
+      label: "assets/img/print/nox-brew-label/model/label.png",
+    },
   },
 ];
 
