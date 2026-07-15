@@ -653,8 +653,124 @@ html:not(.js) .reveal { opacity: 1; transform: none; }
 .viz3d-cyl .body-bottom { background: radial-gradient(60% 60% at 50% 45%, #2c211a, #16100b); }
 .viz3d-cyl .cap-top { background: radial-gradient(60% 60% at 50% 40%, #2c2822, #0d0b09); }
 
+/* ============================================================
+   Дой-пак: интерактивный CSS-3D-просмотрщик (viewer3d, The nut).
+   Каркас строит build.js, слайсы/швы/дно — js/pouch-css3d.js.
+   Без JS / при prefers-reduced-motion сцена скрыта, показан cover.
+   ============================================================ */
+.pouch3d { margin: 0; position: relative; }
+.pouch-scene {
+  display: none; /* включается классом is-live из JS */
+  position: relative;
+  height: 480px;
+  perspective: 1200px;
+  perspective-origin: 50% 45%;
+  cursor: grab;
+  touch-action: pan-y; /* горизонтальный drag вращает, вертикальный свайп скроллит */
+  user-select: none;
+  -webkit-user-select: none;
+}
+.pouch-scene.is-live { display: block; }
+.pouch-scene:active { cursor: grabbing; }
+/* Мягкая контактная тень под моделью — как у viz3d (nox-brew / lunka). */
+.pouch-scene::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 34px;
+  width: 260px;
+  height: 42px;
+  transform: translateX(-50%);
+  background: radial-gradient(50% 50% at 50% 50%, rgba(27,27,22,0.28), rgba(27,27,22,0) 70%);
+  pointer-events: none;
+  z-index: -1;
+}
+/* Блик/затенение поверх сцены — дешёвая имитация объёмного освещения. */
+.pouch-scene::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 90% at 38% 22%, rgba(255,255,255,0.20), rgba(255,255,255,0) 55%),
+    linear-gradient(105deg, rgba(0,0,0,0.16) 0%, rgba(0,0,0,0) 34%, rgba(0,0,0,0) 62%, rgba(0,0,0,0.20) 100%);
+}
+.pouch {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--rx, -12deg)) rotateY(var(--ry, -26deg));
+}
+.pouch-slice {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 50% 50%;
+  background-repeat: no-repeat;
+  background-color: #e4f4cf;
+  backface-visibility: hidden; /* панель гаснет с изнанки — видно заднюю сторону */
+}
+.pouch-shade {
+  position: absolute;
+  inset: 0;
+  background: var(--ink, #1b1b16);
+  pointer-events: none;
+}
+.pouch-seam,
+.pouch-seal,
+.pouch-base {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 50% 50%;
+}
+.pouch-seam {
+  background-color: var(--edge, #1c360e);
+  background-repeat: no-repeat;
+}
+.pouch-seal {
+  border-radius: 4px;
+  background: repeating-linear-gradient(90deg,
+    var(--edge, #1c360e) 0 4px,
+    color-mix(in srgb, var(--edge, #1c360e) 68%, #000) 4px 8px);
+}
+.pouch-base {
+  border-radius: 50%;
+  background: radial-gradient(75% 75% at 50% 40%,
+    color-mix(in srgb, var(--edge, #1c360e) 82%, #000), #0a1505);
+}
+.pouch-fallback {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius, 14px);
+}
+.pouch3d.is-live .pouch-fallback { display: none; }
+.pouch-hint {
+  display: none;
+  margin-top: 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.pouch3d.is-live .pouch-hint { display: block; }
+.pouch3d figcaption {
+  margin-top: 14px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--ink-faint);
+  max-width: 62ch;
+}
+
 @media (max-width: 760px) {
   .viz3d-stage { height: 400px; }
+  .pouch-scene { height: 400px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .viz3d-hint { display: none; }

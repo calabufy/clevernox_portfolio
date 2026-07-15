@@ -237,9 +237,107 @@ ${capSegs.join("\n")}
           </div>`;
 }
 
+// Тип "pouch" — стоячий дой-пак / плоский пакет: силуэт «сплющенного цилиндра».
+// Лицевая и задняя стороны собраны из вертикальных полос, которые вверху сходятся
+// к линии запайки (z=0), а книзу расходятся, образуя округлое пузо глубиной
+// ±d/2·√(1−u²) — то есть по центру пакет самый пухлый, а по бокам грани смыкаются
+// в боковой шов. Дно закрыто эллиптической панелью-гуссетом, верх — тонкой запайкой.
+function renderPouch(m) {
+  const { w, h, d } = m.size;
+  const N = 34; // вертикальных колонок поперёк ширины
+  const cap = m.cap || "#1c360e";
+  const sw = w / N;
+  // Профиль пуза дой-пака по высоте (v: 0 — верхняя запайка, 1 — дно). Узкий
+  // запаянный верх (глубина 0) с округлыми плечами → плавное расширение →
+  // наполненное «пузо», осевшее в нижнюю треть → выпуклое овальное дно-подставка,
+  // на которое пакет устойчиво встаёт. Значение — доля от d/2.
+  const prof = [
+    [0.0, 0.0], [0.06, 0.40], [0.14, 0.66], [0.26, 0.86],
+    [0.42, 0.98], [0.6, 1.0], [0.76, 0.98], [0.9, 0.9], [1.0, 0.78],
+  ];
+  const baseF = prof[prof.length - 1][1];
+  // Колонка постоянной ширины разбита на несколько плоских сегментов по высоте —
+  // так кусочно-линейно приближается изогнутый профиль (одна плоская полоса дала
+  // бы только линейный скос). Все сегменты — прямые дети .viz3d-obj (единый 3D-
+  // контекст), иначе перед и зад в разных preserve-3d не сортируются по глубине.
+  // Задняя сторона получается впеканием rotateY(180deg) в трансформ.
+  function column(img, i, back) {
+    const u = -1 + (2 * (i + 0.5)) / N; // −1..1 поперёк ширины
+    const rad = Math.sqrt(Math.max(0, 1 - u * u)); // эллиптический профиль поперёк
+    const x = (u * w) / 2;
+    const bx = (-i * sw).toFixed(2);
+    const pre = back ? "rotateY(180deg) " : "";
+    const cls = back ? "viz3d-strip pouch-back" : "viz3d-strip";
+    const segs = [];
+    for (let k = 1; k < prof.length; k++) {
+      const va = prof[k - 1][0];
+      const vb = prof[k][0];
+      const za = (d / 2) * rad * prof[k - 1][1];
+      const zb = (d / 2) * rad * prof[k][1];
+      const ya = -h / 2 + va * h;
+      const L = Math.hypot(h * (vb - va), zb - za);
+      const phi = ((Math.atan2(zb - za, h * (vb - va)) * 180) / Math.PI).toFixed(3);
+      const sy = L / (vb - va); // масштаб фрагмента текстуры под длину сегмента
+      const py = -va * sy;
+      segs.push(
+        `            <div class="${cls}" style="width:${(sw + 3).toFixed(2)}px;height:${(L + 2).toFixed(2)}px;margin-left:${(-sw / 2).toFixed(2)}px;transform:${pre}translateX(${x.toFixed(2)}px) translateY(${ya.toFixed(2)}px) translateZ(${za.toFixed(2)}px) rotateX(${phi}deg);background-image:url(${img});background-size:${w}px ${sy.toFixed(2)}px;background-position:${bx}px ${py.toFixed(2)}px;"></div>`
+      );
+    }
+    return segs.join("\n");
+  }
+  const strips = [];
+  for (let i = 0; i < N; i++) strips.push(column(m.faces.back, i, true));
+  for (let i = 0; i < N; i++) strips.push(column(m.faces.front, i, false));
+  return `          <div class="viz3d-obj viz3d-pouch" style="--cap:${cap};">
+            <div class="viz3d-pouch-base" style="width:${w}px;height:${(d * baseF).toFixed(2)}px;margin-left:${(-w / 2).toFixed(2)}px;margin-top:${(-(d * baseF) / 2).toFixed(2)}px;transform:translateY(${(h / 2).toFixed(2)}px) rotateX(90deg);"></div>
+${strips.join("\n")}
+            <div class="viz3d-pouch-seal" style="width:${w}px;margin-left:${(-w / 2).toFixed(2)}px;transform:translateY(${(-h / 2).toFixed(2)}px);"></div>
+          </div>`;
+}
+
+// Тип viewer3d — интерактивный CSS-3D дой-пак, который посетитель вращает мышью
+// и пальцем (js/pouch-css3d.js). build.js отдаёт только каркас-контейнер с
+// текстурами и конфигом в data-*; сами вертикальные полосы-слайсы, боковые швы,
+// запайку и овальное донышко геометрически строит JS при инициализации (углы дуги
+// и стыковку хорд руками не хардкодим — см. пункт 2 брифа). Без JS и при
+// prefers-reduced-motion сцена скрыта и показывается статичный cover (fallback).
+function renderViewer3d(m) {
+  if (!m) return "";
+  const K = m.scale || 1.56; // px на мм — модель занимает ~60% высоты колонки
+  const w = +(m.size.w * K).toFixed(1);
+  const h = +(m.size.h * K).toFixed(1);
+  const bulge = m.bulge != null ? m.bulge : 0.12;
+  const slices = m.slices || 14;
+  const edge = m.edge || "#1c360e";
+  const data = [
+    `data-w="${w}"`, `data-h="${h}"`, `data-bulge="${bulge}"`, `data-slices="${slices}"`,
+    `data-front="${m.faceFront}"`, `data-back="${m.faceBack || ""}"`,
+    `data-left="${m.faceLeft || ""}"`, `data-right="${m.faceRight || ""}"`,
+  ].join("\n             ");
+  return `\n  <section class="container case-section reveal">
+    <div class="case-section-grid">
+      <span class="eyebrow">${regmark()} ${m.eyebrow || "Готовый продукт"}</span>
+      <figure class="pouch3d">
+        <div class="pouch-scene" data-pouch-viewer
+             ${data}
+             style="--edge:${edge};"></div>
+        <img class="pouch-fallback" src="${m.cover}" alt="${m.coverAlt || ""}" loading="lazy" decoding="async">
+        <span class="pouch-hint" aria-hidden="true">потяните, чтобы вращать</span>
+        <figcaption>${m.caption}</figcaption>
+      </figure>
+    </div>
+  </section>
+`;
+}
+
 function renderModel3d(m) {
   if (!m) return "";
-  const inner = m.type === "box" ? renderBox(m) : renderCylinder(m);
+  const inner =
+    m.type === "box"
+      ? renderBox(m)
+      : m.type === "pouch"
+        ? renderPouch(m)
+        : renderCylinder(m);
   // Ведущий \n даёт пустую строку-разделитель перед секцией; при пустом model3d
   // возвращается "" и разметка остальных работ не меняется (см. шаблон work.html).
   return `\n  <section class="container case-section reveal">
@@ -280,7 +378,8 @@ function renderWorkPage(work) {
     ROLE: work.role,
     IDEA_PARAGRAPHS: renderIdeaParagraphs(work.idea),
     IDEA_EXTRAS: renderIdeaExtras(work.idea),
-    MODEL_3D: renderModel3d(work.model3d),
+    MODEL_3D: work.viewer3d ? renderViewer3d(work.viewer3d) : renderModel3d(work.model3d),
+    VIEWER_SCRIPT: work.viewer3d ? '\n<script src="js/pouch-css3d.js"></script>' : "",
     GALLERY: hasGallery ? renderGallery(work.gallery, work.category) : "",
     OUTCOME: work.outcome,
     PREV_SLUG: prev.slug,
