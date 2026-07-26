@@ -359,6 +359,78 @@ html:not(.js) .reveal { opacity: 1; transform: none; }
   color: var(--ink-faint);
 }
 
+/* --- темы (подразделы) внутри направления --------------------------------- */
+/* Без JS: все темы раскрыты, все карточки видны, кнопок-переключателей нет. */
+.topic-groups { display: grid; gap: clamp(36px, 4.5vw, 56px); }
+
+.topic-head { margin: 0; }
+.topic-toggle {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 0 0 14px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+html:not(.js) .topic-toggle { cursor: default; pointer-events: none; }
+html:not(.js) .topic-burger { display: none; }
+
+.topic-burger { position: relative; flex: none; width: 22px; height: 16px; }
+.topic-burger .bar,
+.topic-burger .bar::before,
+.topic-burger .bar::after {
+  position: absolute;
+  left: 0;
+  width: 22px;
+  height: 2px;
+  background: var(--ink);
+  content: "";
+  transition: transform 0.25s ease, background 0.25s ease;
+}
+.topic-burger .bar { top: 7px; }
+.topic-burger .bar::before { top: -6px; }
+.topic-burger .bar::after { top: 6px; }
+.topic-group[data-open="false"] .topic-burger .bar { background: transparent; }
+.topic-group[data-open="false"] .topic-burger .bar::before { transform: translateY(6px) rotate(45deg); }
+.topic-group[data-open="false"] .topic-burger .bar::after { transform: translateY(-6px) rotate(-45deg); }
+
+.topic-name {
+  font-family: var(--font-display);
+  font-size: clamp(20px, 2.4vw, 26px);
+  font-weight: 600;
+}
+.topic-count {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--ink-faint);
+}
+
+.topic-panel { padding-top: clamp(20px, 2.4vw, 28px); }
+html.js .topic-group[data-open="false"] .topic-panel { display: none; }
+html.js .topic-group[data-expanded="false"] .work-card.is-extra { display: none; }
+html:not(.js) .topic-more { display: none; }
+
+.topic-more { margin-top: clamp(20px, 2.4vw, 28px); }
+.topic-more-btn {
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  padding: 11px 22px;
+  background: none;
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.topic-more-btn:hover { border-color: var(--cobalt); color: var(--cobalt); }
+
 .back-link-row { margin-top: clamp(40px, 5vw, 64px); }
 
 /* пустое состояние направления без работ */

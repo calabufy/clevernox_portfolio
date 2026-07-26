@@ -18,6 +18,36 @@
   });
 })();
 
+// Темы внутри направления: сворачивание темы бургер-кнопкой и раскрытие
+// всех работ темы. Прогрессивное улучшение — без JS всё раскрыто (см. style.css).
+(function () {
+  var groups = document.querySelectorAll("[data-topic]");
+  if (!groups.length) return;
+
+  groups.forEach(function (group) {
+    var toggle = group.querySelector(".topic-toggle");
+    var more = group.querySelector("[data-topic-more]");
+
+    if (toggle) {
+      toggle.addEventListener("click", function () {
+        var open = group.getAttribute("data-open") !== "false";
+        group.setAttribute("data-open", String(!open));
+        toggle.setAttribute("aria-expanded", String(!open));
+      });
+    }
+
+    if (more) {
+      var collapsedLabel = more.textContent;
+      more.addEventListener("click", function () {
+        var expanded = group.getAttribute("data-expanded") === "true";
+        group.setAttribute("data-expanded", String(!expanded));
+        more.setAttribute("aria-expanded", String(!expanded));
+        more.textContent = expanded ? collapsedLabel : "Свернуть";
+      });
+    }
+  });
+})();
+
 // Появление блоков при скролле (прогрессивное улучшение — без JS всё видно сразу)
 (function () {
   var items = document.querySelectorAll(".reveal");

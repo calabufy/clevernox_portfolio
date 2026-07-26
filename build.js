@@ -31,14 +31,56 @@ function regmark() {
   return `<svg class="regmark" viewBox="0 0 24 24" aria-hidden="true"><path transform="translate(12,6.1)" d="${REGMARK_HEART}"/><path transform="translate(17.9,12) rotate(90)" d="${REGMARK_HEART}"/><path transform="translate(12,17.9) rotate(180)" d="${REGMARK_HEART}"/><path transform="translate(6.1,12) rotate(-90)" d="${REGMARK_HEART}"/></svg>`;
 }
 
-function renderWorkCard(work) {
-  return `      <a class="work-card" href="work-${work.slug}.html">
+// Темы (подразделы) внутри направления. Тема работы — это `work.topic`, а если
+// его нет — человекочитаемое множественное число от `work.type`. Порядок тем на
+// странице — по числу работ по убыванию, при равенстве — по алфавиту.
+const TOPIC_LABELS = {
+  "Айдентика": "Фирменный стиль",
+  "Айдентика / упаковка": "Упаковка",
+  "Логотип": "Логотипы",
+  "Карточки товара": "Карточки товаров",
+  "Афиша": "Афиши",
+  "Постер": "Постеры",
+  "Листовка": "Листовки",
+  "Упаковка": "Упаковка",
+  "Этикетка": "Этикетки",
+};
+
+// Сколько работ темы видно до нажатия «Смотреть все работы».
+const TOPIC_PREVIEW_COUNT = 3;
+
+function topicOf(work) {
+  return work.topic || TOPIC_LABELS[work.type] || work.type;
+}
+
+function slugifyTopic(name) {
+  return name
+    .toLowerCase()
+    .replace(/[^a-zа-яё0-9]+/gi, "-")
+    .replace(/^-|-$/g, "");
+}
+
+function groupByTopic(categoryWorks) {
+  const groups = new Map();
+  for (const work of categoryWorks) {
+    const name = topicOf(work);
+    if (!groups.has(name)) groups.set(name, []);
+    groups.get(name).push(work);
+  }
+  return [...groups.entries()]
+    .map(([name, items]) => ({ name, items }))
+    .sort((a, b) => b.items.length - a.items.length || a.name.localeCompare(b.name, "ru"));
+}
+
+function renderWorkCard(work, index) {
+  const extra = index != null && index >= TOPIC_PREVIEW_COUNT ? " is-extra" : "";
+  return `      <a class="work-card${extra}" href="work-${work.slug}.html">
         <div class="work-card-media">
           <img src="${work.cardCover || work.cover}" alt="${work.cardAlt}">
           ${regmark()}
         </div>
         <div class="work-card-meta">
-          <h2 class="work-card-title">${work.title}</h2>
+          <h3 class="work-card-title">${work.title}</h3>
           <span class="work-card-type">${work.type}</span>
         </div>
       </a>`;
@@ -60,18 +102,53 @@ function renderCategoryBody(category, categoryWorks) {
   </section>`;
   }
 
-  const cards = categoryWorks.map(renderWorkCard).join("\n\n");
   // Обложки направления «Реклама» портретные (3:4) — карточки сетки используют
   // этот же аспект вместо альбомного 4:3 по умолчанию (см. .work-grid--portrait в style.css).
   const gridClass = PORTRAIT_GRID_CATEGORIES.includes(category.slug) ? "work-grid work-grid--portrait" : "work-grid";
-  return `  <section class="container reveal" aria-label="${label}" style="padding-bottom: clamp(48px, 6vw, 72px);">
-    <div class="${gridClass}">
+  const groups = groupByTopic(categoryWorks);
+
+  // Каждая тема — сворачиваемый блок (бургер-переключатель). Внутри видно
+  // TOPIC_PREVIEW_COUNT работ, остальные раскрывает кнопка «Смотреть все работы».
+  // Без JS ни один блок не свёрнут и все карточки видны (см. html:not(.js) в style.css).
+  const sections = groups
+    .map((group) => {
+      const panelId = `topic-${category.slug}-${slugifyTopic(group.name)}`;
+      const cards = group.items.map(renderWorkCard).join("\n\n");
+      const more =
+        group.items.length > TOPIC_PREVIEW_COUNT
+          ? `
+        <div class="topic-more">
+          <button class="topic-more-btn" type="button" data-topic-more aria-expanded="false">Смотреть все работы (${group.items.length})</button>
+        </div>`
+          : "";
+      return `      <section class="topic-group" data-topic data-open="true" data-expanded="false">
+        <h2 class="topic-head">
+          <button class="topic-toggle" type="button" aria-expanded="true" aria-controls="${panelId}">
+            <span class="topic-burger" aria-hidden="true"><span class="bar"></span></span>
+            <span class="topic-name">${group.name}</span>
+            <span class="topic-count">${group.items.length}</span>
+          </button>
+        </h2>
+
+        <div class="topic-panel" id="${panelId}">
+          <div class="${gridClass}">
 
 ${cards}
 
+          </div>${more}
+        </div>
+      </section>`;
+    })
+    .join("\n\n");
+
+  return `  <section class="container reveal" aria-label="${label}" style="padding-bottom: clamp(48px, 6vw, 72px);">
+    <div class="topic-groups">
+
+${sections}
+
       <!--
-        Шаблон карточки для новой работы этого направления — скопировать блок
-        <a class="work-card">…</a> выше, заменить cover, alt, ссылку, название и тип.
+        Темы формируются автоматически из поля topic (или type) работы в data/works.js —
+        руками этот блок не править, он перезаписывается сборкой build.js.
       -->
 
     </div>
